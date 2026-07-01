@@ -3,164 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DropShip Elite | Single-Code Store</title>
-    <!-- Tailwind CSS for modern, responsive styling -->
-    <script src="https://tailwindcss.com"></script>
+    <title>My Dropship Store</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; padding: 50px; background: #f4f4f4; }
+        .product-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 300px; text-align: center; }
+        button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; width: 100%; margin-top: 10px; }
+    </style>
 </head>
-<body class="bg-gray-50 font-sans">
+<body>
 
-    <!-- Navigation Bar -->
-    <nav class="bg-white shadow-md sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-indigo-600 tracking-wide">📦 DropShipElite</h1>
-            <button onclick="toggleCart()" class="relative bg-indigo-600 text-white px-4 py-2 rounded-full font-medium hover:bg-indigo-700 transition">
-                🛒 Cart (<span id="cart-count">0</span>)
-            </button>
-        </div>
-    </nav>
+    <div class="product-card">
+        <h2>Premium Wireless Headphones</h2>
+        <p>$49.99</p>
+        <button onclick="window.location.href='https://buy.stripe.com/your-payment-link'">Buy Now</button>
+    </div>
 
-    <!-- Hero Section -->
-    <header class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-center py-16 px-4">
-        <h2 class="text-4xl font-extrabold mb-2">Trending Tech & Lifestyle Gear</h2>
-        <p class="text-indigo-100 text-lg">Premium products sourced worldwide, shipped straight to your door.</p>
-    </header>
-
-    <!-- Main Content (Product Grid & Slide-out Cart) -->
-    <main class="max-w-6xl mx-auto px-4 py-12 flex relative">
-        
-        <!-- Product Catalog -->
-        <section id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full transition-all duration-300">
-            <!-- JavaScript dynamically injects products here -->
-        </section>
-
-        <!-- Slide-out Cart Drawer -->
-        <div id="cart-drawer" class="fixed right-0 top-0 h-full w-80 bg-white shadow-2xl p-6 transform translate-x-full transition-transform duration-300 z-50 overflow-y-auto">
-            <div class="flex justify-between items-center border-b pb-4 mb-4">
-                <h3 class="text-xl font-bold text-gray-800">Your Cart</h3>
-                <button onclick="toggleCart()" class="text-gray-500 hover:text-black font-bold text-xl">✕</button>
-            </div>
-            <div id="cart-items" class="space-y-4">
-                <!-- Shopping cart items appear here -->
-                <p class="text-gray-500 text-center py-8">Your cart is empty.</p>
-            </div>
-            <div class="border-t pt-4 mt-6">
-                <div class="flex justify-between font-bold text-lg text-gray-800 mb-4">
-                    <span>Total:</span>
-                    <span id="cart-total">$0.00</span>
-                </div>
-                <button onclick="checkout()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-lg transition">
-                    Proceed to Checkout
-                </button>
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-400 text-center py-6 mt-12 border-t border-gray-800">
-        <p>&copy; 2026 DropShipElite. Powered by HTML5 & Tailwind.</p>
-    </footer>
-
-    <!-- Frontend logic & Product Database -->
-    <script>
-        // 1. Simulated Product Database (Easily replace these with real items)
-        const products = [
-            { id: 1, name: "Minimalist Wireless Earbuds", price: 49.99, image: "https://unsplash.com" },
-            { id: 2, name: "Smart Fitness Watch v2", price: 89.99, image: "https://unsplash.com" },
-            { id: 3, name: "Ergonomic Desk Organizer", price: 29.99, image: "https://unsplash.com" },
-            { id: 4, name: "Portable Power Bank 20k", price: 34.99, image: "https://unsplash.com" },
-            { id: 5, name: "Anti-Theft Travel Backpack", price: 59.99, image: "https://unsplash.com" },
-            { id: 6, name: "RGB Mechanical Keyboard", price: 74.99, image: "https://unsplash.com" }
-        ];
-
-        let cart = [];
-
-        // 2. Render Products into Grid
-        function displayProducts() {
-            const grid = document.getElementById('product-grid');
-            grid.innerHTML = products.map(product => `
-                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col justify-between">
-                    <img class="h-48 w-full object-cover" src="${product.image}" alt="${product.name}">
-                    <div class="p-5 flex-grow flex flex-col justify-between">
-                        <div>
-                            <h4 class="font-bold text-gray-800 text-lg mb-2">${product.name}</h4>
-                            <p class="text-indigo-600 font-semibold text-xl mb-4">$${product.price.toFixed(2)}</p>
-                        </div>
-                        <button onclick="addToCart(${product.id})" class="w-full bg-gray-100 text-indigo-600 font-medium py-2 rounded-lg hover:bg-indigo-600 hover:text-white transition duration-200">
-                            Add to Cart
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // 3. Cart Logic Mechanics
-        function addToCart(productId) {
-            const product = products.find(p => p.id === productId);
-            const cartItem = cart.find(item => item.id === productId);
-
-            if (cartItem) {
-                cartItem.quantity += 1;
-            } else {
-                cart.push({ ...product, quantity: 1 });
-            }
-            updateCart();
-            openCart();
-        }
-
-        function updateCart() {
-            // Count distinct items
-            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-            document.getElementById('cart-count').innerText = count;
-
-            // Compute math totals
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            document.getElementById('cart-total').innerText = `$${total.toFixed(2)}`;
-
-            // Render display items
-            const cartItemsContainer = document.getElementById('cart-items');
-            if (cart.length === 0) {
-                cartItemsContainer.innerHTML = `<p class="text-gray-500 text-center py-8">Your cart is empty.</p>`;
-                return;
-            }
-
-            cartItemsContainer.innerHTML = cart.map(item => `
-                <div class="flex justify-between items-center border-b pb-2">
-                    <div>
-                        <p class="font-medium text-gray-800 text-sm">${item.name}</p>
-                        <p class="text-xs text-gray-500">$${item.price} x ${item.quantity}</p>
-                    </div>
-                    <button onclick="removeFromCart(${item.id})" class="text-red-500 hover:text-red-700 font-bold text-sm">Remove</button>
-                </div>
-            `).join('');
-        }
-
-        function removeFromCart(productId) {
-            cart = cart.filter(item => item.id !== productId);
-            updateCart();
-        }
-
-        // 4. UI Animations (Slide Drawer)
-        function toggleCart() {
-            const drawer = document.getElementById('cart-drawer');
-            drawer.classList.toggle('translate-x-full');
-        }
-
-        function openCart() {
-            const drawer = document.getElementById('cart-drawer');
-            drawer.classList.remove('translate-x-full');
-        }
-
-        // 5. Simulated Checkout Action
-        function checkout() {
-            if(cart.length === 0) {
-                alert("Your cart is empty!");
-                return;
-            }
-            alert("Order Simulation Complete!\n\nIn a live dropshipping build, this action will forward to Stripe or PayPal API to securely collect the transaction.");
-        }
-
-        // Initialize Store on load
-        displayProducts();
-    </script>
 </body>
 </html>
