@@ -1,36 +1,56 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <style>
-        body { font-family: sans-serif; background: #f9f9f9; padding: 20px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; }
-        button { background: #28a745; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; }
+        body { font-family: sans-serif; display: flex; gap: 40px; padding: 40px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .cart { border-left: 2px solid #eee; padding-left: 40px; width: 300px; }
+        .product { padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
     </style>
 </head>
 <body>
 
     <div class="grid" id="store"></div>
+    <div class="cart" id="cart">
+        <h2>Cart</h2>
+        <div id="cart-items"></div>
+        <h3 id="total">Total: $0</h3>
+        <button id="checkout-btn" style="display:none;" onclick="alert('Proceeding to Stripe...')">Checkout</button>
+    </div>
 
     <script>
-        // Your Database (Add new products here)
         const products = [
-            { name: "Wireless Headphones", price: "$49.99", link: "https://buy.stripe.com/test_1" },
-            { name: "Smart Watch", price: "$89.99", link: "https://buy.stripe.com/test_2" },
-            { name: "Portable Charger", price: "$29.99", link: "https://buy.stripe.com/test_3" }
+            { id: 1, name: "Headphones", price: 49.99 },
+            { id: 2, name: "Smart Watch", price: 89.99 }
         ];
+        let cart = [];
 
-        const store = document.getElementById('store');
-        
-        products.forEach(p => {
-            store.innerHTML += `
-                <div class="card">
+        function render() {
+            const storeDiv = document.getElementById('store');
+            storeDiv.innerHTML = products.map(p => `
+                <div class="product">
                     <h3>${p.name}</h3>
-                    <p>Price: ${p.price}</p>
-                    <button onclick="window.location.href='${p.link}'">Checkout</button>
+                    <p>$${p.price}</p>
+                    <button onclick="addToCart(${p.id})">Add to Cart</button>
                 </div>
-            `;
-        });
+            `).join('');
+        }
+
+        function addToCart(id) {
+            const p = products.find(prod => prod.id === id);
+            cart.push(p);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const list = document.getElementById('cart-items');
+            list.innerHTML = cart.map(item => `<li>${item.name} - $${item.price}</li>`).join('');
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            document.getElementById('total').innerText = `Total: $${total.toFixed(2)}`;
+            document.getElementById('checkout-btn').style.display = cart.length > 0 ? 'block' : 'none';
+        }
+
+        render();
     </script>
 </body>
 </html>
